@@ -1,0 +1,44 @@
+name: '${APP_NAME}-${STAGE}'
+services:
+  node:
+    build:
+      context: .
+      dockerfile: .docker/Dockerfile
+      target: ${STAGE}
+    restart: always
+    env_file: .env.${STAGE}
+    ports:
+      - '${BACKEND_HOST_PORT}:${BACKEND_PORT}'
+    depends_on:
+      - mongodb
+    networks:
+      - backend_network
+
+  mongodb:
+    image: mongo:latest
+    hostname: ${MONGODB_HOSTNAME}
+    env_file: .env.${STAGE}
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: ${MONGODB_USERNAME}
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGODB_PASSWORD}
+    volumes:
+      - mongodb-data:/data/db/
+      - mongodb-log:/var/log/mongodb/
+      - ./mongodb/initdb.d/mongo-init.js:/docker-entrypoint-initdb.d/mongo-init.js:ro
+    ports:
+      - '${MONGODB_HOST_PORT}:${MONGODB_PORT}'
+    networks:
+      - backend_network
+
+volumes:
+  mongodb-data:
+    driver: local
+    name: ${APP_NAME}-mongo-data-${STAGE}
+  mongodb-log:
+    driver: local
+    name: ${APP_NAME}-mongo-log-${STAGE}
+
+networks:
+  backend_network:
+    driver: bridge
+    name: ${APP_NAME}-backend-network-${STAGE}

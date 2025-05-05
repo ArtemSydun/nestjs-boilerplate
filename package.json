@@ -19,12 +19,19 @@
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
     "test:e2e": "jest --config ./test/jest-e2e.json",
-    "prepare": "husky install"
+    "prepare": "husky install",
+    "db:up": "docker compose -f docker-compose-db.yml --env-file .env.development up -d --build",
+    "db:down": "docker compose -f docker-compose-db.yml --env-file .env.development down",
+    "db:reset": "docker compose -f docker-compose-db.yml --env-file .env.development down -v"
   },
   "dependencies": {
+    "@nestjs-modules/mailer": "^2.0.2",
     "@nestjs/common": "^11.0.1",
     "@nestjs/config": "^4.0.2",
     "@nestjs/core": "^11.0.1",
+    "@nestjs/jwt": "^11.0.0",
+    "@nestjs/mongoose": "^11.0.3",
+    "@nestjs/passport": "^11.0.5",
     "@nestjs/platform-express": "^11.0.1",
     "@nestjs/swagger": "^11.1.6",
     "@nestjs/throttler": "^6.4.0",
@@ -35,6 +42,7 @@
     "crypto-js": "^4.2.0",
     "eslint-plugin-import": "^2.31.0",
     "husky": "^9.1.7",
+    "passport-jwt": "^4.0.1",
     "reflect-metadata": "^0.2.2",
     "rxjs": "^7.8.1"
   },
