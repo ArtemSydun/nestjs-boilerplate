@@ -19,7 +19,10 @@
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
     "test:e2e": "jest --config ./test/jest-e2e.json",
-    "prepare": "husky install"
+    "prepare": "husky install",
+    "db:up": "docker compose -f docker-compose-db.yml --env-file .env.development up -d --build",
+    "db:down": "docker compose -f docker-compose-db.yml --env-file .env.development down",
+    "db:reset": "docker compose -f docker-compose-db.yml --env-file .env.development down -v"
   },
   "dependencies": {
     "@nestjs/common": "^11.0.1",

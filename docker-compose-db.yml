@@ -1,0 +1,23 @@
+name: 'nestjs-boilerplate'
+services:
+  mongodb:
+    image: mongo:latest
+    hostname: ${MONGODB_HOSTNAME}
+    env_file: .env.development
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: ${MONGODB_USERNAME}
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGODB_PASSWORD}
+    volumes:
+      - mongodb-data:/data/db/
+      - mongodb-log:/var/log/mongodb/
+      - ./mongodb/initdb.d/mongo-init.js:/docker-entrypoint-initdb.d/mongo-init.js:ro
+    ports:
+      - '${MONGODB_PORT}:${MONGODB_PORT}'
+
+volumes:
+  mongodb-data:
+    driver: local
+    name: boilerplate-mongo-data
+  mongodb-log:
+    driver: local
+    name: boilerplate-mongo-log
