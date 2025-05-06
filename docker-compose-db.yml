@@ -1,0 +1,43 @@
+name: 'nestjs-boilerplate'
+services:
+  postgres:
+    image: postgres:14.1-alpine
+    hostname: ${POSTGRES_HOSTNAME}
+    env_file: .env.development
+    environment:
+      POSTGRES_USER: ${POSTGRES_USERNAME}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DATABASE}
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+      - postgres-log:/var/log/postgresql/
+    ports:
+      - '${POSTGRES_PORT}:5432'  # PostgreSQL default port is 5432
+    networks:
+      - backend_network
+
+  pgadmin:
+    image: dpage/pgadmin4
+    container_name: pgadmin
+    environment:
+      PGADMIN_DEFAULT_EMAIL: ${POSTGRES_SUPERADMIN_EMAIL}  # Set this in your .env.development file
+      PGADMIN_DEFAULT_PASSWORD: ${POSTGRES_SUPERADMIN_PASSWORD}  # Set this in your .env.development file
+    ports:
+      - "8080:80"  # Exposes pgAdmin web UI on port 8080
+    depends_on:
+      - postgres  # Make sure pgAdmin waits for PostgreSQL
+    networks:
+      - backend_network
+
+volumes:
+  postgres-data:
+    driver: local
+    name: boilerplate-postgres-data
+  postgres-log:
+    driver: local
+    name: boilerplate-postgres-log
+
+networks:
+  backend_network:
+    driver: bridge
+    name: ${APP_NAME}-backend-network-${STAGE}
